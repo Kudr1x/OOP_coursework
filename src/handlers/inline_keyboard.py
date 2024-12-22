@@ -3,7 +3,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.fsm.context import FSMContext
 
 CALLBACK_PREFIX = "choice_"
-choices = ["GPT-4o", "Gemini", "Mistral AI", "GigaChat"]
+choices = ["GPT-4o", "Gemini", "Mistral AI", "GigaChat", "Claude AI"]
 
 async def create_inline_keyboard_choices_ai(state: FSMContext):
     data = await state.get_data()

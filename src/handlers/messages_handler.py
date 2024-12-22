@@ -1,6 +1,7 @@
 import asyncio
 from html import escape, unescape
 
+import g4f.models
 from aiogram import Router, types, flags
 from aiogram.filters import CommandStart
 from aiogram.fsm.context import FSMContext
@@ -13,10 +14,11 @@ from src.services.gpt_services import chatBot
 from src.bot.state import Form
 
 
-router = Router()
+gpts = [g4f.models.gpt_4o, g4f.models.gemini, g4f.models.mistral_large,
+        g4f.models.gigachat, g4f.models.claude_3_5_sonnet]
 
-GET_PREFIX = "g4f.models."
-GPT_MODELS = ["gpt_4o", "gemini", "mistral_large", "gigachat"]
+
+router = Router()
 
 @router.message(CommandStart())
 async def start(message: types.Message, state: FSMContext):
@@ -50,8 +52,8 @@ async def handle_message(message: types.Message, state: FSMContext):
     await asyncio.sleep(3)
 
     cb = chatBot()
-    print(GET_PREFIX+GPT_MODELS[choise])
-    response, context = cb.get_response(message.text, client, current_model=GET_PREFIX+GPT_MODELS[choise], context=context)
+    # print(choise)
+    response, context = cb.get_response(message.text, client, current_model=gpts[choise], context=context)
 
     await state.update_data(context=context)
 
