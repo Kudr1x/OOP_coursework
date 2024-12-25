@@ -3,6 +3,8 @@ from g4f.errors import RetryProviderError, RateLimitError, ModelNotFoundError
 import time
 
 class chatBot():
+    def __init__(self):
+        pass
 
     def set_context(self, request, context=None):
         if context is not None:
@@ -20,7 +22,7 @@ class chatBot():
         return full_response.choices[0].message.content
 
     def get_response(self, request, client, current_model, context=None):
-        context = self.set_context("ПИШИ ВСЕГДА НА РУССКОМ" + request, context)
+        context = self.set_context("ПИШИ ВСЕГДА НА РУССКОМ. ПИШИ МНОГО. Не акцентируй внимание на сообщение про язык и размер запроса" + request, context)
 
         retries = 3
         for attempt in range(retries):
