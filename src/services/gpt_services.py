@@ -3,7 +3,7 @@ from g4f.errors import RetryProviderError, RateLimitError, ModelNotFoundError
 import time
 
 class chatBot():
-    last_picture_response = ""
+    last_picture_response = "None"
     def __init__(self):
         pass
 
@@ -56,7 +56,9 @@ class chatBot():
 
     def get_translate_text(self, text, client):
         context = self.set_context(
-            "TRANSLATE THE TEXT INTO ENGLISH: " + text)
+            "ACT AS A TRANSLATOR INTO ENGLISH. YOU RECEIVE A "
+            "MESSAGE, YOU JUST TRANSLATE IT INTO ENGLISH, IF IT IS "
+            "ALREADY IN ENGLISH, THEN YOU TYPE IT WITHOUT CHANGES: " + text)
 
         retries = 3
         for attempt in range(retries):
@@ -89,7 +91,7 @@ class chatBot():
 
     async def get_image_response(self, request, client):
 
-        request = str(self.get_translate_text(request, client)).replace("TRANSLATE THE TEXT INTO ENGLISH: ", "")
+        request = str(self.get_translate_text(request, client))
         self.last_picture_response = request
         response = await client.images.async_generate(
             model="flux",

@@ -6,9 +6,6 @@ CALLBACK_PREFIX = "choice_"
 choices = ["GPT-4o", "Gemini Pro", "Mistral AI", "o1-mini", "Claude AI", "Генерация фото"]
 
 class InlineKeyboard:
-    def __init__(self):
-        pass
-
     @staticmethod
     async def create_inline_keyboard_choices_ai(state: FSMContext):
         data = await state.get_data()

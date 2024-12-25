@@ -10,6 +10,7 @@ from src.handlers.messages_handler import gpts
 from src.keyboard.inline_keyboard import CALLBACK_PREFIX, InlineKeyboard
 from src.services.gpt_services import chatBot
 
+from src.handlers.messages_handler import chatbot
 
 class CallbackHandler(Handler):
     router = Router()
@@ -51,33 +52,6 @@ class CallbackHandler(Handler):
         await state.update_data(context=[])
         await callback_query.message.edit_reply_markup(reply_markup=None)
         await callback_query.answer("Чат очищен! Можете задать новый вопрос!")
-
-    @staticmethod
-    @router.callback_query(lambda c: c.data == "continue")
-    async def cancel_callback(callback_query: types.CallbackQuery, state: FSMContext):
-        data = await state.get_data()
-        client = data.get("client")
-        if client is None:
-            client = Client()
-            await state.update_data(client=client)
-        context = data.get("context", [])
-        choise = data.get("selected_choice", 2)
-
-        cb = chatBot()
-        response, context = cb.get_response("Продолжи", client, current_model=gpts[choise], context=context)
-
-        await state.update_data(context=context)
-
-        unescaped_response = unescape(response)
-        inline_keyboard = InlineKeyboard()
-
-        await callback_query.message.answer(
-            unescaped_response,
-            reply_markup=inline_keyboard.create_text_keyboard(),
-        )
-
-        await callback_query.message.edit_reply_markup(reply_markup=None)
-        await callback_query.answer()
 
     @staticmethod
     @router.callback_query(lambda c: c.data == "continue")
@@ -136,9 +110,8 @@ class CallbackHandler(Handler):
             client = Client()
             await state.update_data(client=client)
 
-        cb = chatBot()
-        response = await cb.get_image_response(cb.last_picture_response, client)
-
+        response = await chatbot.get_image_response(chatbot.last_picture_response, client)
+        print(chatbot.last_picture_response)
         inline_keyboard = InlineKeyboard()
 
         await callback_query.message.answer_photo(

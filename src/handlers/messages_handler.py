@@ -14,6 +14,7 @@ from src.keyboard.inline_keyboard import InlineKeyboard
 from src.services.gpt_services import chatBot
 from src.bot.state import Form
 
+chatbot = chatBot()
 gpts = [g4f.models.gpt_4o, g4f.models.gemini_pro, g4f.models.mistral_large,
         g4f.models.o1_mini, g4f.models.claude_3_5_sonnet]
 
@@ -56,11 +57,11 @@ class MessageHandler(Handler):
         await bot.send_chat_action(chat_id=message.from_user.id, action="typing")
         await asyncio.sleep(3)
 
-        cb = chatBot()
+
         inline_keyboard = InlineKeyboard()
 
         if choise == 5:
-            response = await cb.get_image_response(message.text, client)
+            response = await chatbot.get_image_response(message.text, client)
             if isinstance(response, str):
                 await message.answer_photo(
                     response,
@@ -69,7 +70,7 @@ class MessageHandler(Handler):
             else:
                 await message.answer("Failed to generate image response.")
         else:
-            response, context = cb.get_text_response(message.text, client, current_model=gpts[choise], context=context)
+            response, context = chatbot.get_text_response(message.text, client, current_model=gpts[choise], context=context)
 
             await state.update_data(context=context)
 
