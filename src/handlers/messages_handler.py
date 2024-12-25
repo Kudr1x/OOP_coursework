@@ -14,8 +14,8 @@ from src.keyboard.inline_keyboard import InlineKeyboard
 from src.services.gpt_services import chatBot
 from src.bot.state import Form
 
-gpts = [g4f.models.gpt_4o, g4f.models.gemini, g4f.models.mistral_large,
-        g4f.models.gigachat, g4f.models.claude_3_5_sonnet]
+gpts = [g4f.models.gpt_4o, g4f.models.gemini_pro, g4f.models.mistral_large,
+        g4f.models.o1_mini, g4f.models.claude_3_5_sonnet]
 
 class MessageHandler(Handler):
     router = Router()
@@ -57,15 +57,26 @@ class MessageHandler(Handler):
         await asyncio.sleep(3)
 
         cb = chatBot()
-        response, context = cb.get_response(message.text, client, current_model=gpts[choise], context=context)
-
-        await state.update_data(context=context)
-
-        unescaped_response = unescape(response)
         inline_keyboard = InlineKeyboard()
 
-        await message.answer(
-            unescaped_response,
-            reply_markup=inline_keyboard.create_cancel_keyboard(),
-        )
+        if choise == 5:
+            response = await cb.get_image_response(message.text, client)
+            if isinstance(response, str):
+                await message.answer_photo(
+                    response,
+                    reply_markup=inline_keyboard.create_image_keyboard()
+                )
+            else:
+                await message.answer("Failed to generate image response.")
+        else:
+            response, context = cb.get_text_response(message.text, client, current_model=gpts[choise], context=context)
+
+            await state.update_data(context=context)
+
+            unescaped_response = unescape(response)
+
+            await message.answer(
+                unescaped_response,
+                reply_markup=inline_keyboard.create_text_keyboard(),
+            )
 

@@ -3,7 +3,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.fsm.context import FSMContext
 
 CALLBACK_PREFIX = "choice_"
-choices = ["GPT-4o", "Gemini", "Mistral AI", "GigaChat", "Claude AI"]
+choices = ["GPT-4o", "Gemini Pro", "Mistral AI", "o1-mini", "Claude AI", "Генерация фото"]
 
 class InlineKeyboard:
     def __init__(self):
@@ -30,9 +30,27 @@ class InlineKeyboard:
             builder.row(*row)
         return builder.as_markup()
 
+
     @staticmethod
-    def create_cancel_keyboard():
+    def create_text_keyboard():
         builder = InlineKeyboardBuilder()
-        builder.add(InlineKeyboardButton(text="Завершить", callback_data="cancel"))
-        builder.add(InlineKeyboardButton(text="Продолжить", callback_data="continue"))
+        builder.row(
+            InlineKeyboardButton(text="❌ Завершить", callback_data="cancel"),
+            InlineKeyboardButton(text="✍️ Продолжить", callback_data="continue")
+        )
+        builder.row(
+            InlineKeyboardButton(text="⚙️ Настройки", callback_data="settings")
+        )
+        return builder.as_markup()
+
+    @staticmethod
+    def create_image_keyboard():
+        builder = InlineKeyboardBuilder()
+        builder.row(
+            InlineKeyboardButton(text="❌ Завершить", callback_data="cancel"),
+            InlineKeyboardButton(text="🖼 Повторить", callback_data="repeat")
+        )
+        builder.row(
+            InlineKeyboardButton(text="⚙️ Настройки", callback_data="settings")
+        )
         return builder.as_markup()
